@@ -30,6 +30,7 @@ type State = {
   railTab: RailTab;
   sky: SkySnapshot | null;
   aboutOpen: boolean;
+  notesOpen: boolean;
   mobileRail: boolean;
   wireOpen: boolean;
   wireFilter: WireFilter;
@@ -45,6 +46,7 @@ type State = {
   setRailTab: (t: RailTab) => void;
   setSky: (s: SkySnapshot | null) => void;
   setAboutOpen: (v: boolean) => void;
+  setNotesOpen: (v: boolean) => void;
   setMobileRail: (v: boolean) => void;
   setWireOpen: (v: boolean) => void;
   setWireFilter: (v: WireFilter) => void;
@@ -82,6 +84,7 @@ export const useMeridian = create<State>()((set, get) => ({
   railTab: "roster",
   sky: null,
   aboutOpen: false,
+  notesOpen: false,
   mobileRail: false,
   wireOpen: false,
   wireFilter: "all",
@@ -118,7 +121,8 @@ export const useMeridian = create<State>()((set, get) => ({
   setLayer: (k, v) => set((s) => ({ layers: { ...s.layers, [k]: v } })),
   setRailTab: (t) => set({ railTab: t }),
   setSky: (sky) => set({ sky }),
-  setAboutOpen: (aboutOpen) => set({ aboutOpen }),
+  setAboutOpen: (aboutOpen) => set({ aboutOpen, notesOpen: aboutOpen ? false : get().notesOpen }),
+  setNotesOpen: (notesOpen) => set({ notesOpen, aboutOpen: notesOpen ? false : get().aboutOpen }),
   setMobileRail: (mobileRail) => set({ mobileRail }),
   setWireOpen: (wireOpen) => set({ wireOpen }),
   setWireFilter: (wireFilter) => set({ wireFilter }),

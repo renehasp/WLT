@@ -37,6 +37,7 @@ docker compose down
 
 Override the host port with `WLT_PORT=3000 docker compose up --build`. Optional `DATABASE_URL` points at Postgres; without it the image uses the embedded store.
 
+See [CHANGELOG.md](CHANGELOG.md) for version history. The in-app header badge (`V 1.1`) opens the same notes.
 
 ## Layers
 

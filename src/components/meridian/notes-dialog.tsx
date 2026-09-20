@@ -1,6 +1,9 @@
 import { useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CHANGE_KIND_LABEL, RELEASES, type ChangeKind } from "@/lib/meridian/changelog";
+import { APP_VERSION, versionLabel } from "@/lib/meridian/version";
 import { useMeridian } from "@/lib/meridian/store";
 
 function focusables(root: HTMLElement): HTMLElement[] {
@@ -11,9 +14,15 @@ function focusables(root: HTMLElement): HTMLElement[] {
   ].filter((el) => !el.hasAttribute("disabled") && el.tabIndex !== -1);
 }
 
-export function AboutDialog() {
-  const open = useMeridian((s) => s.aboutOpen);
-  const setAboutOpen = useMeridian((s) => s.setAboutOpen);
+function kindTone(kind: ChangeKind) {
+  if (kind === "added") return "live" as const;
+  if (kind === "fixed") return "warn" as const;
+  return "mute" as const;
+}
+
+export function NotesDialog() {
+  const open = useMeridian((s) => s.notesOpen);
+  const setNotesOpen = useMeridian((s) => s.setNotesOpen);
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -32,7 +41,7 @@ export function AboutDialog() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        setAboutOpen(false);
+        setNotesOpen(false);
         return;
       }
       if (e.key !== "Tab" || !panelRef.current) return;
@@ -54,7 +63,7 @@ export function AboutDialog() {
 
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, setAboutOpen]);
+  }, [open, setNotesOpen]);
 
   useEffect(() => {
     if (open) return;
@@ -65,7 +74,7 @@ export function AboutDialog() {
 
   if (!open) return null;
 
-  const close = () => setAboutOpen(false);
+  const close = () => setNotesOpen(false);
 
   return (
     <div
@@ -79,44 +88,47 @@ export function AboutDialog() {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="w-full max-w-lg rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]"
+        className="flex max-h-[85dvh] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-surface shadow-[var(--shadow-border)]"
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3 px-5 pt-5">
           <div>
             <h2 id={titleId} className="font-display text-2xl italic">
-              WLT
+              Release notes
             </h2>
-            <p className="mt-1 text-sm text-muted">World Leaders Tracker</p>
+            <p className="mt-1 font-mono text-xs tracking-[0.18em] text-muted uppercase">
+              {versionLabel()} · running {APP_VERSION}
+            </p>
           </div>
-          <Button
-            ref={closeRef}
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Close"
-            onClick={close}
-          >
+          <Button ref={closeRef} variant="ghost" size="icon-sm" aria-label="Close release notes" onClick={close}>
             <X className="size-4" />
           </Button>
         </div>
-        <div className="mt-4 space-y-3 text-sm leading-relaxed text-muted">
-          <p>
-            Positions are fused from public official calendars, open ADS-B (adsb.lol, with OpenSky
-            as fallback), AIS-style vessel reports, and modeled great-circle tracks when transponders
-            are dark. The basemap is OpenStreetMap — no tile key. Moving principals show a red flown
-            track and a green remaining track.
-          </p>
-          <p>
-            Heads of state often fly without a public squawk. When a live contact matches a known
-            VIP airframe, the badge reads ADS-B. “ADS-B on” means the feed is up but those tails are
-            silent. Event pins open the wire: public conferences, closed bilaterals, and unscheduled
-            holds drawn from diaries and OSINT — not classified sources.
-          </p>
-          <p>
-            This is not GPS, not classified tracking, and not an official source. Scrub the timeline to
-            replay UNGA week — 6 Sep to 28 Sep 2026 — and watch the Pacific and Atlantic corridors fill.
-            Space plays the clock, L jumps to live, N opens release notes.
-          </p>
+        <div className="meridian-scroll mt-4 min-h-0 flex-1 overflow-y-auto border-t border-border px-5 py-4">
+          <ol className="space-y-6">
+            {RELEASES.map((rel) => (
+              <li key={rel.version}>
+                <div className="flex items-baseline gap-2">
+                  <p className="font-mono text-xs tracking-[0.18em] text-fg uppercase">V {rel.version}</p>
+                  <p className="font-mono text-xs text-subtle tabular-nums">{rel.date}</p>
+                </div>
+                <p className="mt-1 text-sm">{rel.title}</p>
+                {rel.changes.map((group) => (
+                  <div key={group.kind} className="mt-3">
+                    <Badge tone={kindTone(group.kind)}>{CHANGE_KIND_LABEL[group.kind]}</Badge>
+                    <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-muted">
+                      {group.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </li>
+            ))}
+          </ol>
         </div>
+        <p className="border-t border-border px-5 py-3 font-mono text-xs text-subtle">
+          Space play · L live · N notes
+        </p>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MapCanvas } from "./map-canvas";
 import { TopBar } from "./top-bar";
 import { SideRail } from "./side-rail";
@@ -8,18 +8,40 @@ import { LayerControls } from "./layer-controls";
 import { SourceLegend, TrailLegend } from "./map-chrome-legends";
 import { EventWire } from "./event-wire";
 import { AboutDialog } from "./about";
+import { NotesDialog } from "./notes-dialog";
 import { useMeridian } from "@/lib/meridian/store";
 import { fetchVipSky } from "@/lib/meridian/opensky";
+import { applyShareSearch, buildShareSearch } from "@/lib/meridian/share-url";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export function AppShell() {
   const playing = useMeridian((s) => s.playing);
   const followLive = useMeridian((s) => s.followLive);
   const selectedId = useMeridian((s) => s.selectedId);
+  const selectedEventId = useMeridian((s) => s.selectedEventId);
+  const clock = useMeridian((s) => s.clock);
+  const [shareReady, setShareReady] = useState(false);
 
   useEffect(() => {
-    useMeridian.getState().goLive();
+    const hadShare = applyShareSearch(window.location.search);
+    if (!hadShare) useMeridian.getState().goLive();
+    setShareReady(true);
   }, []);
+
+  useEffect(() => {
+    if (!shareReady || playing) return;
+    const s = useMeridian.getState();
+    const next = buildShareSearch({
+      clock: s.clock,
+      live: s.followLive,
+      id: s.selectedId ?? undefined,
+      eventId: s.selectedEventId ?? undefined,
+    });
+    const url = `${window.location.pathname}${next}${window.location.hash}`;
+    if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== url) {
+      window.history.replaceState(null, "", url);
+    }
+  }, [shareReady, playing, followLive, selectedId, selectedEventId, clock]);
 
   useEffect(() => {
     if (!playing && !followLive) return;
@@ -57,6 +79,38 @@ export function AppShell() {
     };
   }, []);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el?.closest("input, textarea, select, [contenteditable='true']")) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const s = useMeridian.getState();
+      if (s.notesOpen || s.aboutOpen) {
+        if (e.key === "n" || e.key === "N") {
+          e.preventDefault();
+          s.setNotesOpen(false);
+        }
+        return;
+      }
+      if (e.key === " " || e.code === "Space") {
+        e.preventDefault();
+        s.togglePlay();
+        return;
+      }
+      if (e.key === "l" || e.key === "L") {
+        e.preventDefault();
+        s.goLive();
+        return;
+      }
+      if (e.key === "n" || e.key === "N") {
+        e.preventDefault();
+        s.setNotesOpen(!s.notesOpen);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <TooltipProvider>
       <div className="meridian-shell relative w-full overflow-hidden bg-bg text-fg">
@@ -90,6 +144,7 @@ export function AppShell() {
           </div>
         </div>
         <AboutDialog />
+        <NotesDialog />
       </div>
     </TooltipProvider>
   );

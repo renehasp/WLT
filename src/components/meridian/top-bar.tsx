@@ -1,10 +1,13 @@
-import { Info, Menu, Radio } from "lucide-react";
+import { useState } from "react";
+import { Info, Link2, Menu, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useMeridian } from "@/lib/meridian/store";
 import { formatUtc } from "@/lib/meridian/format";
 import { useWorld } from "@/lib/meridian/use-world";
+import { currentShareUrl } from "@/lib/meridian/share-url";
+import { versionLabel } from "@/lib/meridian/version";
 
 const ADSB_TOOLTIP =
   "Open ADS-B feed status: live VIP contacts when matched; quiet when the feed is up but those tails are silent.";
@@ -28,11 +31,24 @@ export function TopBar() {
   const sky = useMeridian((s) => s.sky);
   const goLive = useMeridian((s) => s.goLive);
   const setAboutOpen = useMeridian((s) => s.setAboutOpen);
+  const setNotesOpen = useMeridian((s) => s.setNotesOpen);
   const setMobileRail = useMeridian((s) => s.setMobileRail);
   const world = useWorld();
   const airborne = world.fixes.filter((f) => f.mode === "airborne").length;
   const adsb = world.fleet.filter((f) => f.status === "adsb").length;
   const badge = adsbBadge(adsb, sky?.status);
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = async () => {
+    const url = currentShareUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      window.prompt("Copy link", url);
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
+  };
 
   return (
     <header className="pointer-events-none absolute inset-x-0 top-0 z-20 p-3 md:p-4">
@@ -55,8 +71,16 @@ export function TopBar() {
               <span className="hidden font-mono text-xs tracking-[0.22em] text-muted uppercase sm:inline">
                 World Leaders Tracker
               </span>
+              <button
+                type="button"
+                className="font-mono text-xs tracking-[0.22em] text-muted uppercase transition-colors duration-150 ease-out hover:text-fg"
+                aria-label={`Open release notes, ${versionLabel()}`}
+                onClick={() => setNotesOpen(true)}
+              >
+                {versionLabel()}
+              </button>
             </div>
-            <p className={"mt-1 font-mono text-xs text-muted tabular-nums"}>{formatUtc(clock)}</p>
+            <p className="mt-1 font-mono text-xs text-muted tabular-nums">{formatUtc(clock)}</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Badge tone="mute" className="hidden sm:inline-flex">
@@ -67,21 +91,21 @@ export function TopBar() {
                 <Badge tone={badge.tone}>{badge.label}</Badge>
               </span>
             </Tooltip>
-            <Button
-              variant={followLive ? "live" : "outline"}
-              size="sm"
-              onClick={goLive}
-              className="gap-1.5"
-            >
+            <Button variant={followLive ? "live" : "outline"} size="sm" onClick={goLive} className="gap-1.5">
               <Radio className="size-3.5" />
               Live
             </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="About WLT"
-              onClick={() => setAboutOpen(true)}
-            >
+            <Tooltip content={copied ? "Copied" : "Copy share link"}>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={copied ? "Link copied" : "Copy share link"}
+                onClick={() => void copyLink()}
+              >
+                <Link2 className="size-4" />
+              </Button>
+            </Tooltip>
+            <Button variant="ghost" size="icon-sm" aria-label="About WLT" onClick={() => setAboutOpen(true)}>
               <Info className="size-4" />
             </Button>
           </div>
