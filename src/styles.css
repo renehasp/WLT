@@ -1,0 +1,327 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #08090b;
+  --color-surface: #111316;
+  --color-elevated: #191c21;
+  --color-fg: #ecece8;
+  --color-muted: #8b8e93;
+  --color-subtle: #6a6e74;
+  --color-primary: #c5cdd6;
+  --color-primary-fg: #0a0b0d;
+  --color-border: #242830;
+  --color-live: #7d9a8c;
+  --color-warn: #c4a574;
+  --color-alert: #c07060;
+  --color-track: #8a9a8e;
+  --font-display: "Instrument Serif", "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-border: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-border-hover: 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #app {
+    height: 100%;
+    height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    letter-spacing: -0.011em;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+.meridian-shell {
+  height: 100%;
+  height: 100dvh;
+  max-height: 100%;
+  max-height: 100dvh;
+}
+
+.meridian-map.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  z-index: 0;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.leaflet-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.leaflet-control-attribution {
+  background: transparent !important;
+  color: var(--color-subtle) !important;
+  font-size: 10px;
+  margin: 0 8px 88px !important;
+  box-shadow: none !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--color-muted) !important;
+}
+
+.m-leaflet-icon,
+.m-leaflet-icon.leaflet-div-icon,
+.m-leaflet-icon.leaflet-marker-icon {
+  background: none !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
+.m-tiles {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  filter: invert(1) hue-rotate(180deg) brightness(0.88) contrast(1.08) saturate(0.28);
+}
+
+.m-pin {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  transform: translateZ(0);
+}
+
+.m-disc {
+  position: relative;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16), 0 8px 18px rgba(0, 0, 0, 0.45);
+  background: var(--color-elevated);
+}
+
+.m-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  outline-offset: -1px;
+}
+
+.m-code {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+}
+
+.m-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--color-live) 70%, transparent);
+  opacity: 0;
+}
+
+.m-pin.is-live .m-pulse {
+  animation: pin-pulse 2.4s var(--ease-out) infinite;
+}
+
+.m-pin.is-selected .m-disc {
+  width: 32px;
+  height: 32px;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 3px var(--color-primary),
+    0 10px 22px rgba(0, 0, 0, 0.5);
+}
+
+.m-label {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--color-bg) 86%, transparent);
+  box-shadow: var(--shadow-border);
+  color: var(--color-fg);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  font-family: var(--font-mono);
+}
+
+.m-craft,
+.m-ship {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.m-craft-body,
+.m-ship-body {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  background: var(--color-bg);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.m-craft.is-adsb .m-craft-body {
+  color: var(--color-live);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-live) 80%, white);
+}
+
+.m-event {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.m-event-body {
+  position: relative;
+  z-index: 1;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--color-elevated);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.m-event.is-live .m-event-body {
+  color: var(--color-live);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-live) 70%, white);
+}
+
+.m-event.is-selected .m-event-body {
+  width: 30px;
+  height: 30px;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 3px var(--color-primary),
+    0 10px 22px rgba(0, 0, 0, 0.5);
+}
+
+.m-event-pulse {
+  position: absolute;
+  inset: 2px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklab, var(--color-live) 70%, transparent);
+  opacity: 0;
+}
+
+.m-event.is-live .m-event-pulse {
+  animation: pin-pulse 2.4s var(--ease-out) infinite;
+}
+
+.m-event-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 9999px;
+  background: var(--color-fg);
+  color: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+}
+
+.m-event .m-label {
+  max-width: 148px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes pin-pulse {
+  0% {
+    transform: scale(0.72);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-pin.is-live .m-pulse,
+  .m-event.is-live .m-event-pulse {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
+.meridian-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.meridian-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 99px;
+}
