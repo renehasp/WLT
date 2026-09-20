@@ -36,9 +36,22 @@ export function DetailPanel() {
   const track = getTrack(leader.id).filter(
     (w) => w.t >= clock - 10 * 86_400_000 && w.t <= clock + 10 * 86_400_000,
   );
-  const vessel = VESSELS.find((v) => v.id === leader.vesselId);
+  const trip = fix.trip;
+  const vesselId = trip?.vesselId ?? leader.vesselId;
+  const vessel = vesselId ? VESSELS.find((v) => v.id === vesselId) : undefined;
 
-  const craftKind: "air" | "sea" | null = leader.aircraft ? "air" : vessel ? "sea" : null;
+  // At-sea / vessel trips must prefer vessel craft (Ship + vessel overlay), not aircraft.
+  // Airborne keeps the aircraft path. Leaders may have both aircraft and vesselId.
+  const preferVessel = fix.mode === "at-sea" || trip?.kind === "vessel";
+  const craftKind: "air" | "sea" | null = preferVessel
+    ? vessel
+      ? "sea"
+      : null
+    : leader.aircraft
+      ? "air"
+      : vessel
+        ? "sea"
+        : null;
   const craftImageUrl = craftKind === "air" ? leader.aircraft?.imageUrl : vessel?.imageUrl;
   const craftCaption =
     craftKind === "air" && leader.aircraft
@@ -52,8 +65,6 @@ export function DetailPanel() {
       : craftKind === "sea" && vessel
         ? `Open craft details for ${vessel.name}`
         : "Open craft details";
-
-  const trip = fix.trip;
   const fromCity = trip?.depart.place.city;
   const toCity = trip?.arrive.place.city;
   const elapsed = trip ? tripElapsedMinutes(clock, trip.depart.t) : null;
