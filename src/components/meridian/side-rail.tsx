@@ -151,10 +151,12 @@ export function SideRail() {
                   <span
                     className={cn(
                       "font-mono text-xs tracking-wider",
-                      row.status === "ADS-B" || row.status === "MODELED" ? "text-live" : "text-muted",
+                      row.status === "ADS-B" || row.status === "MODELED" || row.kind === "sea"
+                        ? "text-live"
+                        : "text-muted",
                     )}
                   >
-                    {row.status}
+                    {row.kind === "sea" || row.status === "AIS" ? "MODELED" : row.status}
                   </span>
                   <span className="min-w-0">
                     <span className="block truncate text-sm">{row.principal}</span>
