@@ -34,6 +34,8 @@ export type Aircraft = {
   operator: string;
   note: string;
   home: Place;
+  /** Optional approved craft photo. Missing → silhouette placeholder. */
+  imageUrl?: string;
 };
 
 export type Vessel = {
@@ -44,6 +46,8 @@ export type Vessel = {
   operator: string;
   note: string;
   leaderId?: string;
+  /** Optional approved craft photo. Missing → silhouette placeholder. */
+  imageUrl?: string;
 };
 
 export type Trip = {
