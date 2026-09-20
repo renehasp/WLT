@@ -49,7 +49,7 @@ export function sourceLabel(s: SourceKind): string {
     case "adsb":
       return "ADS-B";
     case "ais":
-      return "AIS";
+      return "Modeled";
     case "osint":
       return "OSINT";
   }

@@ -73,7 +73,10 @@ export function DetailPanel() {
         {vessel ? (
           <>
             <h3 className="mt-5 font-mono text-xs tracking-[0.18em] text-muted uppercase">Associated vessel</h3>
-            <p className="mt-2 text-sm">{vessel.name}</p>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <p className="text-sm">{vessel.name}</p>
+              <Badge tone="warn">Modeled</Badge>
+            </div>
             <p className="mt-1 text-xs text-muted">{vessel.note}</p>
           </>
         ) : null}
