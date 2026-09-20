@@ -1,9 +1,26 @@
 import { Info, Menu, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useMeridian } from "@/lib/meridian/store";
 import { formatUtc } from "@/lib/meridian/format";
 import { useWorld } from "@/lib/meridian/use-world";
+
+const ADSB_TOOLTIP =
+  "Open ADS-B feed status: live VIP contacts when matched; quiet when the feed is up but those tails are silent.";
+
+function adsbBadge(adsb: number, status: string | undefined) {
+  if (adsb > 0) {
+    return { tone: "live" as const, label: `${adsb} ADS-B` };
+  }
+  if (status === "unreachable") {
+    return { tone: "warn" as const, label: "ADS-B retry" };
+  }
+  if (status === "dark" || status === "live") {
+    return { tone: "live" as const, label: "ADS-B on · quiet" };
+  }
+  return { tone: "mute" as const, label: "ADS-B" };
+}
 
 export function TopBar() {
   const clock = useMeridian((s) => s.clock);
@@ -15,6 +32,7 @@ export function TopBar() {
   const world = useWorld();
   const airborne = world.fixes.filter((f) => f.mode === "airborne").length;
   const adsb = world.fleet.filter((f) => f.status === "adsb").length;
+  const badge = adsbBadge(adsb, sky?.status);
 
   return (
     <header className="pointer-events-none absolute inset-x-0 top-0 z-20 p-3 md:p-4">
@@ -38,33 +56,17 @@ export function TopBar() {
                 World Leaders Tracker
               </span>
             </div>
-            <p className="mt-1 font-mono text-xs text-muted tabular-nums">{formatUtc(clock)}</p>
+            <p className={"mt-1 font-mono text-xs text-muted tabular-nums"}>{formatUtc(clock)}</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Badge tone="mute" className="hidden sm:inline-flex">
               {airborne} airborne
             </Badge>
-            <Badge
-              tone={
-                adsb
-                  ? "live"
-                  : sky?.status === "unreachable"
-                    ? "warn"
-                    : sky?.status === "live" || sky?.status === "dark"
-                      ? "live"
-                      : "mute"
-              }
-            >
-              {adsb
-                ? `${adsb} ADS-B`
-                : sky?.status === "live"
-                  ? "ADS-B dark"
-                  : sky?.status === "dark"
-                    ? "ADS-B on"
-                    : sky?.status === "unreachable"
-                      ? "ADS-B retry"
-                      : "ADS-B"}
-            </Badge>
+            <Tooltip content={ADSB_TOOLTIP}>
+              <span className="inline-flex" title={ADSB_TOOLTIP}>
+                <Badge tone={badge.tone}>{badge.label}</Badge>
+              </span>
+            </Tooltip>
             <Button
               variant={followLive ? "live" : "outline"}
               size="sm"

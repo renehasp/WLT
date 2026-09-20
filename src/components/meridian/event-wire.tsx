@@ -17,7 +17,7 @@ const FILTERS: { id: WireFilter; label: string }[] = [
   { id: "all", label: "All" },
   { id: "public", label: "Public" },
   { id: "closed", label: "Closed" },
-  { id: "unscheduled", label: "Off-book" },
+  { id: "unscheduled", label: "Unscheduled" },
 ];
 
 function visTone(v: MeetingVisibility) {
@@ -40,7 +40,7 @@ function Row({ ev, clock, active }: { ev: Meeting; clock: number; active: boolea
       )}
     >
       <div className="flex items-center gap-2">
-        <span className="font-mono text-xs tabular-nums text-muted">{formatTime(Date.parse(ev.t))}</span>
+        <span className={"font-mono text-xs tabular-nums text-muted"}>{formatTime(Date.parse(ev.t))}</span>
         <Badge tone={status === "live" ? "live" : visTone(ev.visibility)}>
           {status === "live" ? "Now" : visibilityLabel(ev.visibility)}
         </Badge>
@@ -48,8 +48,8 @@ function Row({ ev, clock, active }: { ev: Meeting; clock: number; active: boolea
           {sourceLabel(ev.source)}
         </span>
       </div>
-      <p className="mt-1 text-sm leading-snug">{ev.title}</p>
-      <p className="mt-0.5 text-xs text-muted">{ev.venue}</p>
+      <p className={"mt-1 text-sm leading-snug"}>{ev.title}</p>
+      <p className={"mt-0.5 text-xs text-muted"}>{ev.venue}</p>
     </button>
   );
 }
@@ -65,7 +65,7 @@ function EventCard({ ev, clock }: { ev: Meeting; clock: number }) {
     <div className="border-b border-border px-3 py-3">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="font-display text-xl leading-tight italic">{ev.title}</p>
+          <p className={"font-display text-xl leading-tight italic"}>{ev.title}</p>
           <p className="mt-1 text-sm text-muted">
             {ev.venue} · {ev.place.city}
           </p>
@@ -78,10 +78,10 @@ function EventCard({ ev, clock }: { ev: Meeting; clock: number }) {
         <Badge tone={status === "live" ? "live" : visTone(ev.visibility)}>
           {status === "live" ? "Now" : visibilityLabel(ev.visibility)}
         </Badge>
-        <Badge tone="solid">{sourceLabel(ev.source)}</Badge>
+        <Badge tone={"solid"}>{sourceLabel(ev.source)}</Badge>
         <Badge>{confidenceLabel(ev.confidence)}</Badge>
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-muted">{ev.detail}</p>
+      <p className={"mt-2 text-sm leading-relaxed text-muted"}>{ev.detail}</p>
       <p className="mt-2 font-mono text-xs tabular-nums text-subtle">
         {formatUtc(start)}
         {end ? ` – ${formatTime(end)}` : ""}
@@ -156,6 +156,7 @@ export function EventWire() {
               <button
                 key={f.id}
                 type="button"
+                aria-pressed={filter === f.id}
                 onClick={() => setFilter(f.id)}
                 className={cn(
                   "h-7 rounded-md font-mono text-xs tracking-wide uppercase",

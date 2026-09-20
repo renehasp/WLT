@@ -5,6 +5,7 @@ import { SideRail } from "./side-rail";
 import { Timeline } from "./timeline";
 import { DetailPanel } from "./detail";
 import { LayerControls } from "./layer-controls";
+import { SourceLegend, TrailLegend } from "./map-chrome-legends";
 import { EventWire } from "./event-wire";
 import { AboutDialog } from "./about";
 import { useMeridian } from "@/lib/meridian/store";
@@ -69,15 +70,19 @@ export function AppShell() {
                 <EventWire />
               </div>
               {selectedId ? <DetailPanel /> : null}
-              <div className="hidden self-start sm:block">
+              <div className="hidden self-start sm:flex sm:flex-col sm:items-end sm:gap-2">
                 <LayerControls />
+                <TrailLegend />
+                <SourceLegend />
               </div>
             </div>
             <div className="pt-3">
               <div className="mb-2 flex flex-col gap-2 sm:hidden">
                 <EventWire />
-                <div className="flex justify-end">
+                <div className="flex flex-col items-end gap-2">
                   <LayerControls horizontal />
+                  <TrailLegend />
+                  <SourceLegend />
                 </div>
               </div>
               <Timeline />

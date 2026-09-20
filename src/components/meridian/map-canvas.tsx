@@ -36,7 +36,11 @@ function Pin({ fix, selected }: { fix: LeaderFix; selected: boolean }) {
       <span className="m-pulse" />
       {live ? (
         <span className="absolute top-0 right-0 z-10 grid size-3.5 place-items-center rounded-full bg-bg text-live shadow-[var(--shadow-border)]">
-          <Plane className="size-2.5" strokeWidth={2} />
+          {fix.mode === "at-sea" ? (
+            <Ship className="size-2.5" strokeWidth={2} />
+          ) : (
+            <Plane className="size-2.5" strokeWidth={2} />
+          )}
         </span>
       ) : null}
       <span className="m-disc">
@@ -55,7 +59,7 @@ function Pin({ fix, selected }: { fix: LeaderFix; selected: boolean }) {
           {fix.leader.iso.toUpperCase()}
         </span>
       </span>
-      {selected ? <span className="m-label">{fix.leader.shortName}</span> : null}
+      {selected ? <span className={"m-label"}>{fix.leader.shortName}</span> : null}
     </button>
   );
 }
@@ -77,7 +81,7 @@ function Craft({ row }: { row: FleetStatus }) {
 
 function Boat({ row }: { row: VesselFix }) {
   return (
-    <button type="button" className="m-ship" aria-label={row.vessel.name}>
+    <button type="button" className="m-ship" aria-label={`Modeled vessel: ${row.vessel.name}`}>
       <span className="m-ship-body">
         <Ship className="size-3.5" strokeWidth={1.75} />
       </span>
@@ -108,9 +112,9 @@ function EventPin({
         <Calendar className="size-3.5" strokeWidth={1.75} />
       </span>
       {cluster.items.length > 1 ? (
-        <span className="m-event-count">{cluster.items.length}</span>
+        <span className={"m-event-count"}>{cluster.items.length}</span>
       ) : null}
-      <span className="m-label">{selected ? primary.title : cluster.city}</span>
+      <span className={"m-label"}>{selected ? primary.title : cluster.city}</span>
     </button>
   );
 }
@@ -185,6 +189,7 @@ export function MapCanvas() {
   const seaMarks = useRef(new Map<string, MarkerRec>());
   const eventMarks = useRef(new Map<string, MarkerRec>());
   const [mapReady, setMapReady] = useState(false);
+  const [mapFailed, setMapFailed] = useState(false);
   const world = useWorld();
   const worldRef = useRef(world);
   worldRef.current = world;
@@ -337,7 +342,7 @@ export function MapCanvas() {
         if (!cancelled) setMapReady(true);
       });
     })().catch(() => {
-      /* map init failed; host stays on the dark fallback fill */
+      if (!cancelled) setMapFailed(true);
     });
 
     return () => {
@@ -433,7 +438,7 @@ export function MapCanvas() {
           leaderMarks.current.set(leaderId, rec);
           rec.marker.on("click", (ev) => {
             L.DomEvent.stopPropagation(ev);
-            useMeridian.getState().select(leaderId);
+            if (leaderId) useMeridian.getState().select(leaderId);
           });
         }
         rec.marker.setLatLng([fix.lat, fix.lng]);
@@ -529,6 +534,19 @@ export function MapCanvas() {
   return (
     <div className="absolute inset-0 isolate z-0 overflow-hidden bg-bg">
       <div ref={hostRef} className="meridian-map absolute inset-0 h-full w-full" />
+      {!mapReady && !mapFailed ? (
+        <p
+          className="pointer-events-none absolute inset-0 z-[1] grid place-items-center text-sm text-muted"
+          aria-live="polite"
+        >
+          Loading map…
+        </p>
+      ) : null}
+      {mapFailed ? (
+        <p className="pointer-events-none absolute inset-0 z-[1] grid place-items-center text-sm text-muted">
+          Map unavailable
+        </p>
+      ) : null}
     </div>
   );
 }
