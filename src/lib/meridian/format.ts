@@ -93,3 +93,39 @@ export function visibilityLabel(v: MeetingVisibility): string {
 export function clampClock(ms: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, ms));
 }
+
+/** Parse ISO timestamp to ms; null if missing/invalid. Never fabricate. */
+export function parseIsoMs(iso: string | undefined | null): number | null {
+  if (!iso) return null;
+  const ms = Date.parse(iso);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+/** `{n}m` or `{h}h {m}m` for non-negative whole minutes. */
+export function formatDurationMinutes(totalMinutes: number): string {
+  const n = Math.max(0, Math.floor(totalMinutes));
+  if (n < 60) return `${n}m`;
+  const h = Math.floor(n / 60);
+  const m = n % 60;
+  return `${h}h ${m}m`;
+}
+
+/**
+ * Elapsed whole minutes since departure vs clock.
+ * Hidden (null) when depart missing/invalid or clock has not reached depart.
+ */
+export function tripElapsedMinutes(clockMs: number, departIso: string | undefined | null): number | null {
+  const departMs = parseIsoMs(departIso);
+  if (departMs === null || clockMs < departMs) return null;
+  return Math.max(0, Math.floor((clockMs - departMs) / 60_000));
+}
+
+/**
+ * Remaining whole minutes until arrival vs clock.
+ * Hidden (null) when arrive missing/invalid or clock past arrival.
+ */
+export function tripRemainingMinutes(clockMs: number, arriveIso: string | undefined | null): number | null {
+  const arriveMs = parseIsoMs(arriveIso);
+  if (arriveMs === null || clockMs > arriveMs) return null;
+  return Math.max(0, Math.floor((arriveMs - clockMs) / 60_000));
+}
