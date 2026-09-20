@@ -6,7 +6,11 @@ const UNGA_TITLE = "UN General Assembly 81";
 function ac(
   partial: Omit<Aircraft, "note"> & { note?: string },
 ): Aircraft {
-  return { note: "Known VIP airframe. Transponder often dark in flight.", ...partial };
+  return {
+    note: "Known VIP airframe. Transponder often dark in flight.",
+    imageUrl: `/craft/${partial.id}.webp`,
+    ...partial,
+  };
 }
 
 function ungaTrip(
@@ -317,6 +321,7 @@ export const VESSELS: Vessel[] = [
     mmsi: "319078100",
     operator: "UAE Presidential Flight / private registry",
     leaderId: "ae",
+    imageUrl: "/craft/azzam.webp",
     note: "Associated royal yacht. AIS last reported in the Ligurian Sea. Principal not confirmed aboard.",
   },
   {
@@ -325,6 +330,7 @@ export const VESSELS: Vessel[] = [
     flag: "id",
     operator: "Indonesian Navy",
     leaderId: "id",
+    imageUrl: "/craft/kapitan.webp",
     note: "Used for a short Java Sea inspection earlier in September. Now alongside in Jakarta.",
   },
 ];

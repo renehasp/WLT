@@ -11,6 +11,21 @@ export type Release = {
 
 export const RELEASES: Release[] = [
   {
+    version: "1.2.0",
+    date: "2026-09-20",
+    title: "Real VIP airframe and vessel photos",
+    changes: [
+      {
+        kind: "added",
+        items: [
+          "Every aircraft and both vessels now show a real photograph in the detail card and craft overlay.",
+          "Photos sourced from Wikimedia Commons (CC BY / CC BY-SA / CC0 / public domain / GODL-India) — not JetPhotos or Planespotters, whose catalogues are not free to reuse.",
+          "Attribution table in docs/craft-attribution.md.",
+        ],
+      },
+    ],
+  },
+  {
     version: "1.1.0",
     date: "2026-09-20",
     title: "Notes, permalinks, and the detail card",

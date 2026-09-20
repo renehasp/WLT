@@ -183,6 +183,7 @@ export function CraftOverlay({ open, onClose, kind, aircraft, vessel, trip }: Cr
             Active trip · {sourceLabel(trip.source)} · {confidenceLabel(trip.confidence)}
           </p>
         ) : null}
+        <p className="mt-3 font-mono text-xs text-subtle">Photo · Wikimedia Commons</p>
       </div>
     </div>
   );

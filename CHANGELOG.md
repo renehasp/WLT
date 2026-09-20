@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 The in-app **V x.y** badge reads these notes.
 
+## [1.2.0] — 2026-09-20
+
+### Added
+
+- Real photographs for every VIP airframe and both vessels (detail card + overlay).
+- Open-licence sources from Wikimedia Commons (CC BY / CC BY-SA / CC0 / public domain). JetPhotos and Planespotters are not reused — those sites do not grant redistribution.
+- `docs/craft-attribution.md` lists file, author, and license for each id.
+
 ## [1.1.0] — 2026-09-20
 
 ### Added
@@ -36,5 +44,6 @@ The in-app **V x.y** badge reads these notes.
 - Scrubbable timeline, events wire, and clustered conference pins.
 - Docker Compose image for self-hosted deploys.
 
+[1.2.0]: https://github.com/renehasp/WLT/releases/tag/v1.2.0
 [1.1.0]: https://github.com/renehasp/WLT/releases/tag/v1.1.0
 [1.0.0]: https://github.com/renehasp/WLT/releases/tag/v1.0.0
