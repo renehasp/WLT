@@ -4,6 +4,8 @@ Live map of world principals for UNGA week — official schedules, ADS-B (adsb.l
 
 Scrub the timeline, follow red-behind / green-ahead tracks, and open event pins for public conferences, closed bilaterals, and unscheduled holds.
 
+<img width="1915" height="885" alt="image" src="https://github.com/user-attachments/assets/a5be9e8f-afb4-4a2b-b831-7f351cb4ccbc" />
+
 **This is not GPS and not an official source.** Live contacts are labeled ADS-B. Everything else is fused from public calendars and modeled routes.
 
 ## Stack
