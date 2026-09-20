@@ -245,7 +245,7 @@ export function MapCanvas() {
         updateWhenZooming: false,
         updateWhenIdle: true,
         className: "m-tiles",
-        attribution: "© OpenStreetMap",
+        attribution: "\u00a9 OpenStreetMap",
       };
 
       const osm = L.tileLayer(OSM_FR, {
@@ -254,7 +254,7 @@ export function MapCanvas() {
       });
       let osmOk = false;
       let fellBack = false;
-      const useFallback = () => {
+      const fallbackTile = () => {
         if (fellBack || cancelled || osmOk) return;
         fellBack = true;
         map.removeLayer(osm);
@@ -265,11 +265,11 @@ export function MapCanvas() {
         osmOk = true;
       });
       osm.on("tileerror", () => {
-        if (!osmOk) useFallback();
+        if (!osmOk) fallbackTile();
       });
       timers.push(
         window.setTimeout(() => {
-          if (!osmOk) useFallback();
+          if (!osmOk) fallbackTile();
         }, 4000),
       );
       osm.addTo(map);
