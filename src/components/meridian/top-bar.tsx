@@ -56,7 +56,7 @@ export function TopBar() {
                 World Leaders Tracker
               </span>
             </div>
-            <p className="mt-1 font-mono text-xs text-muted tabular-nums">{formatUtc(clock)}</p>
+            <p className={"mt-1 font-mono text-xs text-muted tabular-nums"}>{formatUtc(clock)}</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Badge tone="mute" className="hidden sm:inline-flex">
