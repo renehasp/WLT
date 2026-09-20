@@ -1,0 +1,16 @@
+.git
+.github
+.grok
+.tanstack
+.vercel
+.output
+.nitro
+node_modules
+screenshots
+artifacts
+*.log
+.env
+.env.*
+AGENTS.md
+AGENTS.project.md
+.dockerignore

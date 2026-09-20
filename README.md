@@ -19,12 +19,22 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:8080](http://localhost:8080).
+## Docker
+
+Build and run with Compose — maps host port 8080 by default:
 
 ```bash
-npm run build
-npm run preview
+docker compose up --build
 ```
+
+Then open [http://localhost:8080](http://localhost:8080).
+
+```bash
+docker compose down
+```
+
+Override the host port with `WLT_PORT=3000 docker compose up --build`. Optional `DATABASE_URL` points at Postgres; without it the image uses the embedded store.
+
 
 ## Layers
 
