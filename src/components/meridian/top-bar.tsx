@@ -7,7 +7,7 @@ import { useMeridian } from "@/lib/meridian/store";
 import { formatUtc } from "@/lib/meridian/format";
 import { useWorld } from "@/lib/meridian/use-world";
 import { currentShareUrl } from "@/lib/meridian/share-url";
-import { versionLabel } from "@/lib/meridian/version";
+import { APP_VERSION } from "@/lib/meridian/version";
 
 const ADSB_TOOLTIP =
   "Open ADS-B feed status: live VIP contacts when matched; quiet when the feed is up but those tails are silent.";
@@ -68,17 +68,19 @@ export function TopBar() {
               <span className="font-display text-xl italic leading-none tracking-tight md:text-2xl">
                 WLT
               </span>
+              <Tooltip content="Release notes">
+                <button
+                  type="button"
+                  className="inline-flex h-7 items-center rounded-md px-1.5 font-mono text-sm tabular-nums text-live transition-colors duration-150 ease-out hover:bg-elevated"
+                  aria-label={`WLT version ${APP_VERSION}, open release notes`}
+                  onClick={() => setNotesOpen(true)}
+                >
+                  {APP_VERSION}
+                </button>
+              </Tooltip>
               <span className="hidden font-mono text-xs tracking-[0.22em] text-muted uppercase sm:inline">
                 World Leaders Tracker
               </span>
-              <button
-                type="button"
-                className="font-mono text-xs tracking-[0.22em] text-muted uppercase transition-colors duration-150 ease-out hover:text-fg"
-                aria-label={`Open release notes, ${versionLabel()}`}
-                onClick={() => setNotesOpen(true)}
-              >
-                {versionLabel()}
-              </button>
             </div>
             <p className="mt-1 font-mono text-xs text-muted tabular-nums">{formatUtc(clock)}</p>
           </div>

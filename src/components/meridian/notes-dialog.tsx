@@ -88,7 +88,7 @@ export function NotesDialog() {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="flex max-h-[85dvh] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-surface shadow-[var(--shadow-border)]"
+        className="flex h-[min(36rem,85dvh)] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-surface shadow-[var(--shadow-border)]"
       >
         <div className="flex items-start justify-between gap-3 px-5 pt-5">
           <div>
@@ -103,7 +103,7 @@ export function NotesDialog() {
             <X className="size-4" />
           </Button>
         </div>
-        <div className="meridian-scroll mt-4 min-h-0 flex-1 overflow-y-auto border-t border-border px-5 py-4">
+        <div className="meridian-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain border-t border-border px-5 py-4">
           <ol className="space-y-6">
             {RELEASES.map((rel) => (
               <li key={rel.version}>
